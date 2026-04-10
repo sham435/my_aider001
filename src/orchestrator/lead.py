@@ -29,13 +29,26 @@ class CoworkLead:
 
     def _run_aider(self, agent: str, model: str, prompt: str) -> bool:
         prompt_path = self.router.get_prompt_path(agent)
+        
+        # Determine file targets based on agent
+        file_targets = []
+        if agent in ["senior_dev", "tester", "refactorer", "frontend", "data_engineer"]:
+            # Add common target directories
+            file_targets = ["src/", "tests/"]
+        
         cmd = [
             "aider",
             "--model", model,
             "--read", str(prompt_path),
-            "--message", prompt,
             "--yes",
         ]
+        
+        # Add file targets if any
+        for f in file_targets:
+            cmd.extend(["--file", f])
+        
+        cmd.extend(["--message", prompt])
+        
         if self.auto_commit:
             cmd.append("--auto-commits")
 
