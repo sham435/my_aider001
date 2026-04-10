@@ -1,0 +1,1 @@
+/run tree -I 'node_modules|__pycache__|.git|venv' -L 3

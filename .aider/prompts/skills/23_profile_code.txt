@@ -1,0 +1,2 @@
+/run python -m cProfile -o profile.prof main.py
+Then suggest top 3 functions to optimize.

@@ -1,0 +1,1 @@
+Write a benchmark comparing current impl vs alternative for . Use pytest-benchmark.

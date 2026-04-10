@@ -1,0 +1,1 @@
+Scan code for env vars. Generate .env.example with descriptions.

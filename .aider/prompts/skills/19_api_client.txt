@@ -1,0 +1,1 @@
+Generate a typed Python/TS API client for the current OpenAPI spec.

@@ -1,0 +1,1 @@
+Explain this code line by line. Focus on gotchas and complexity.

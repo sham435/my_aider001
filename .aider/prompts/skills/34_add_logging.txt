@@ -1,0 +1,1 @@
+Add structured logging to all functions in . Use log level INFO for entry/exit.

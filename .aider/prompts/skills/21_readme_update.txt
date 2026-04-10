@@ -1,0 +1,1 @@
+Update README.md: setup, usage, architecture diagram in mermaid, env vars, test cmd.

@@ -1,0 +1,1 @@
+/run pip-licenses --format=markdown > LICENSES.md

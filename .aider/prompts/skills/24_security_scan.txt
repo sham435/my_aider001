@@ -1,0 +1,1 @@
+/run bandit -r . && semgrep --config=auto .

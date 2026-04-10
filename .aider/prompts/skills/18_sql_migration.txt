@@ -1,0 +1,1 @@
+Write an Alembic migration for this schema change. Include upgrade and downgrade.

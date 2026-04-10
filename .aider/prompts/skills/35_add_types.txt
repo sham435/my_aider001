@@ -1,0 +1,1 @@
+Add Python type hints or TypeScript types to all functions in . No Any.

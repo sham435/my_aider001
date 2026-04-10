@@ -1,0 +1,1 @@
+/run git tag v && git push origin v && gh release create v --generate-notes

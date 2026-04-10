@@ -1,0 +1,2 @@
+/lint
+Then /run ruff check . --fix && black .
