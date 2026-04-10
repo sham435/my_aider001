@@ -4,7 +4,7 @@ from rich import print
 from rich.table import Table
 from src.orchestrator.dag import DAG, TaskNode
 from src.orchestrator.lead import CoworkLead
-from src.orchestrator.router import ModelRouter
+from src.orchestrator.router import ModelRouter, AGENT_MODEL_MAP
 
 app = typer.Typer(name="ag3", help="Antigravity 3.0 — Local multi-agent coding OS on deepseek-r1:8b")
 
@@ -44,11 +44,10 @@ def run(
 @app.command()
 def agents():
     """List 16 available agents and their models"""
-    router = ModelRouter()
     table = Table(title="16 Agents — deepseek-r1:8b mode")
     table.add_column("Agent", style="cyan")
     table.add_column("Model", style="yellow")
-    for agent, model in router.AGENT_MODEL_MAP.items():
+    for agent, model in AGENT_MODEL_MAP.items():
         table.add_row(agent, model)
     print(table)
 
