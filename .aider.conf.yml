@@ -1,0 +1,20 @@
+# Antigravity 3.0 Single-Model Config — deepseek-r1:8b only
+model: ollama/deepseek-r1:8b
+editor-model: ollama/deepseek-r1:8b
+weak-model: ollama/deepseek-r1:8b
+
+# Antigravity settings
+read: .aider/prompts
+multiline-mode: true
+auto-commits: false
+dirty-commits: false
+watch-files: true
+editor-edit-format: diff
+
+# Python stack
+lint-cmd: ruff check . --fix && black .
+test-cmd: pytest -v --cov=src --cov-report=term-missing
+language: python
+
+# Cowork mode
+yes-always: false

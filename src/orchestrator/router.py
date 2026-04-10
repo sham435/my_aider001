@@ -1,0 +1,18 @@
+AGENT_MODEL_MAP = {
+    "architect": "ollama/deepseek-r1:8b",
+    "senior_dev": "ollama/deepseek-r1:8b",
+    "code_reviewer": "ollama/deepseek-r1:8b",
+    "devops": "ollama/deepseek-r1:8b",
+    "tester": "ollama/deepseek-r1:8b",
+    "debugger": "ollama/deepseek-r1:8b",
+    "refactorer": "ollama/deepseek-r1:8b",
+    "docs_writer": "ollama/deepseek-r1:8b",
+    "security": "ollama/deepseek-r1:8b",
+    "data_engineer": "ollama/deepseek-r1:8b",
+    "frontend": "ollama/deepseek-r1:8b",
+    "performance": "ollama/deepseek-r1:8b",
+    "pm": "ollama/deepseek-r1:8b",
+    "researcher": "ollama/deepseek-r1:8b",
+    "fast_editor": "ollama/deepseek-r1:8b",
+    "cowork_lead": "ollama/deepseek-r1:8b",
+}
