@@ -1,4 +1,5 @@
 import typer
+import os
 from pathlib import Path
 from rich import print
 from rich.table import Table
@@ -21,11 +22,16 @@ def run(
         print("[red]ERROR: Ollama not running. Start with `ollama serve`[/red]")
         raise typer.Exit(1)
 
+    # Bootstrap directories so coder doesn't no-op
+    os.makedirs("src/utils", exist_ok=True)
+    os.makedirs("tests", exist_ok=True)
+    os.makedirs(".aider/memory/adrs", exist_ok=True)
+
     dag = DAG(goal=goal)
     t1 = TaskNode(name="architect", agent="architect", prompt=f"Plan: {goal}")
-    t2 = TaskNode(name="senior_dev", agent="senior_dev", prompt=f"Implement: {goal}", depends_on=[t1.id])
-    t3 = TaskNode(name="tester", agent="tester", prompt=f"Test: {goal}", depends_on=[t2.id])
-    t4 = TaskNode(name="code_reviewer", agent="code_reviewer", prompt=f"Review: {goal}. Be strict and find at least 1 [NIT].", depends_on=[t3.id])
+    t2 = TaskNode(name="senior_dev", agent="senior_dev", prompt=f"Implement: {goal}\n\nCreate:\n1. src/utils/math.py with add(a: int, b: int) -> int\n2. tests/test_math.py with pytest tests for positive, negative, zero\nEnsure clean imports and structure.")
+    t3 = TaskNode(name="tester", agent="tester", prompt=f"Run pytest on the code. Fix any failures. Ensure tests pass for: {goal}")
+    t4 = TaskNode(name="code_reviewer", agent="code_reviewer", prompt=f"Review: {goal}. Be strict. Find at least 1 [NIT] or approve.")
     for t in [t1, t2, t3, t4]:
         dag.add_node(t)
 

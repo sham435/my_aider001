@@ -22,7 +22,7 @@ def get_last_commit_hash() -> str:
 
 def ensure_directories():
     """Create necessary directories before running aider"""
-    dirs = ["src", "tests", "src/utils"]
+    dirs = ["src", "tests", "src/utils", ".aider/memory/adrs"]
     for d in dirs:
         os.makedirs(d, exist_ok=True)
 
@@ -40,34 +40,38 @@ class CoworkLead:
         
         prompt_path = self.router.get_prompt_path(agent)
         
-        # Determine file targets and special flags based on agent
+        # Build command with visibility flags
         cmd = [
             "aider",
             "--model", model,
             "--read", str(prompt_path),
+            "--message", prompt,
             "--yes",
+            "--show-diffs",  # See what changes
+            "--stream",      # Live output
         ]
         
-        # Add file targets and special flags based on agent type
+        # Add agent-specific file targets and flags
         if agent == "architect":
             cmd.extend(["--architect", "--auto-accept-architect"])
-        elif agent in ["senior_dev", "refactorer", "frontend", "data_engineer"]:
-            # Add src directory for file creation
-            cmd.extend(["--file", "src/"])
+        elif agent == "senior_dev":
+            # Coder needs file targets to actually write
+            cmd.extend(["--file", "src/utils/math.py", "--file", "tests/test_math.py"])
         elif agent == "tester":
-            # Tester needs to run tests
-            cmd.extend(["--file", "src/", "--file", "tests/"])
+            # Tester runs pytest
+            cmd.extend(["--file", "src/", "--file", "tests/", "--test-cmd", "pytest -v", "--auto-test"])
         elif agent == "code_reviewer":
             # Reviewer needs to see the code
             cmd.extend(["--file", "src/", "--file", "tests/"])
         
-        # Add message last
-        cmd.extend(["--message", prompt])
-        
         if self.auto_commit:
             cmd.append("--auto-commits")
+        else:
+            cmd.append("--no-auto-commits")
 
+        print(f"[LEAD] -> {agent} [{model}]")
         print(f"[LEAD] Exec: {' '.join(cmd)}")
+        
         before = get_last_commit_hash()
         result = subprocess.run(cmd, capture_output=True, text=True)
 
@@ -77,7 +81,7 @@ class CoworkLead:
 
         print(result.stdout)
         after = get_last_commit_hash()
-        return before != after
+        return before != after or "Applied edit" in result.stdout or "No changes" not in result.stdout
 
     def delegate(self, node: TaskNode) -> bool:
         model = self.router.get_model(node.agent)
