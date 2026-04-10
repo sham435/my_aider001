@@ -1,4 +1,5 @@
 import subprocess
+import os
 from pathlib import Path
 from typing import List
 from rich import print
@@ -19,6 +20,12 @@ def get_last_commit_hash() -> str:
     )
     return result.stdout.strip()
 
+def ensure_directories():
+    """Create necessary directories before running aider"""
+    dirs = ["src", "tests", "src/utils"]
+    for d in dirs:
+        os.makedirs(d, exist_ok=True)
+
 class CoworkLead:
     def __init__(self, dag: DAG, router: ModelRouter, auto_commit: bool = True, auto_yes: bool = True):
         self.dag = dag
@@ -28,14 +35,12 @@ class CoworkLead:
         self.base_commit = get_last_commit_hash()
 
     def _run_aider(self, agent: str, model: str, prompt: str) -> bool:
+        # Ensure directories exist before running aider
+        ensure_directories()
+        
         prompt_path = self.router.get_prompt_path(agent)
         
-        # Determine file targets based on agent
-        file_targets = []
-        if agent in ["senior_dev", "tester", "refactorer", "frontend", "data_engineer"]:
-            # Add common target directories
-            file_targets = ["src/", "tests/"]
-        
+        # Determine file targets and special flags based on agent
         cmd = [
             "aider",
             "--model", model,
@@ -43,10 +48,20 @@ class CoworkLead:
             "--yes",
         ]
         
-        # Add file targets if any
-        for f in file_targets:
-            cmd.extend(["--file", f])
+        # Add file targets and special flags based on agent type
+        if agent == "architect":
+            cmd.extend(["--architect", "--auto-accept-architect"])
+        elif agent in ["senior_dev", "refactorer", "frontend", "data_engineer"]:
+            # Add src directory for file creation
+            cmd.extend(["--file", "src/"])
+        elif agent == "tester":
+            # Tester needs to run tests
+            cmd.extend(["--file", "src/", "--file", "tests/"])
+        elif agent == "code_reviewer":
+            # Reviewer needs to see the code
+            cmd.extend(["--file", "src/", "--file", "tests/"])
         
+        # Add message last
         cmd.extend(["--message", prompt])
         
         if self.auto_commit:
@@ -82,6 +97,9 @@ class CoworkLead:
         if not self.router.check_ollama():
             print("[red]ERROR: Ollama not running. Start with `ollama serve`[/red]")
             return False
+
+        # Ensure directories exist at start
+        ensure_directories()
 
         while not self.dag.all_done():
             node = self.dag.next_runnable()
