@@ -34,11 +34,10 @@ class CoworkLead:
             "--model", model,
             "--read", str(prompt_path),
             "--message", prompt,
+            "--yes",
         ]
         if self.auto_commit:
             cmd.append("--auto-commits")
-        if self.auto_yes:
-            cmd.append("--yes")
 
         print(f"[LEAD] Exec: {' '.join(cmd)}")
         before = get_last_commit_hash()
@@ -48,6 +47,7 @@ class CoworkLead:
             print(f"[red]AIDER ERROR[/red]: {result.stderr}")
             return False
 
+        print(result.stdout)
         after = get_last_commit_hash()
         return before != after
 

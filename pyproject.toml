@@ -2,7 +2,7 @@
 name = "antigravity-3.0"
 version = "0.1.0"
 description = "Local multi-agent coding OS — R1:8b edition"
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 dependencies = [
     "typer[all]>=0.12",
     "rich>=13.0",
